@@ -36,11 +36,12 @@ src/main/java
 
 ---
 
-##  How to Run Tests
+
+## ▶ How to Run Tests
 
 Run all tests using Maven:
 
- ```bash
+```bash
 mvn clean test
 
 ---
