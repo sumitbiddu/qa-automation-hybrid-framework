@@ -2,9 +2,7 @@ name: QA Automation Tests
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: ["main"]
 
 jobs:
   test:
@@ -17,8 +15,15 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '20'
-          distribution: 'temurin'
+          distribution: temurin
+          java-version: 20
 
-      - name: Build & Run Tests
+      - name: Run Tests
         run: mvn clean test
+
+      - name: Upload Screenshots (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots/
