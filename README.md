@@ -46,16 +46,16 @@ mvn clean test
 
 ---
 
-## CI/CD Pipeline
+ CI/CD Pipeline
 
 This project uses GitHub Actions to automatically run tests on every push to the main branch.
 
-## Workflow file:
+ Workflow file:
 .github/workflows/test.yml
 
 ---
 
-## Features
+ Features
 UI Automation (Login, Cart, Product flow)
 API Testing (GET/POST validations)
 Page Object Model (POM) architecture
@@ -64,6 +64,6 @@ Extent Reports integration (optional)
 
 ---
 
-## Author
+ Author
 Sumit Biddu
 QA Automation Engineer
