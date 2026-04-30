@@ -40,7 +40,7 @@ src/main/java
 
 Run all tests using Maven:
 
-```bash
+ ```bash
 mvn clean test
 
 ---
