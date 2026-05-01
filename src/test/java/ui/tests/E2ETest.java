@@ -5,8 +5,12 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import ui.pages.LoginPage;
 import ui.pages.ProductsPage;
+import org.testng.annotations.Listeners;
+
 
 public class E2ETest extends BaseUI {
+	
+	
 
     @Test
     public void completeEndToEndFlow() {

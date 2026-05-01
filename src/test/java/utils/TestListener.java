@@ -1,44 +1,70 @@
 package utils;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
+import base.BaseUI;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import java.io.File;
+import java.io.IOException;
+
 public class TestListener implements ITestListener {
 
-    ExtentReports extent = ExtentReportManager.getReportObject();
-    ExtentTest test;
-
-    @Override
-    public void onTestStart(ITestResult result) {
-        test = extent.createTest(result.getMethod().getMethodName());
-    }
-
-    @Override
-    public void onTestSuccess(ITestResult result) {
-        test.pass("Test Passed");
-    }
-
-    @Override
-    public void onTestFailure(ITestResult result) {
-
-        test.fail(result.getThrowable());
-
-        String path = utils.ScreenshotUtil.captureScreenshot(
-                base.BaseUI.driver,
-                result.getMethod().getMethodName()
-        );
+    //  Screenshot method
+    public void captureScreenshot(WebDriver driver, String testName) {
+        File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        File dest = new File("screenshots/" + testName + ".png");
 
         try {
-            test.addScreenCaptureFromPath(path);
+            FileUtils.copyFile(src, dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //  On Test Failure
+    @Override
+    public void onTestFailure(ITestResult result) {
+        try {
+            WebDriver driver = BaseUI.driver;
+
+            if (driver == null) {
+                System.out.println("Driver is null, cannot take screenshot");
+                return;
+            }
+
+            File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+
+            File folder = new File("screenshots");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+            String fileName = result.getName() + "_" + System.currentTimeMillis() + ".png";
+
+            File dest = new File(folder, fileName);
+
+            FileUtils.copyFile(src, dest);
+
+            System.out.println("Screenshot saved: " + dest.getAbsolutePath());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // (Optional but good for logs)
     @Override
-    public void onFinish(org.testng.ITestContext context) {
-        extent.flush();
+    public void onTestSuccess(ITestResult result) {
+        System.out.println("Test Passed: " + result.getName());
+    }
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        System.out.println("Test Started: " + result.getName());
     }
 }
