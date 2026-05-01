@@ -3,13 +3,13 @@ package utils;
 import base.BaseUI;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.MediaEntityBuilder;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
+
+import java.io.File;
 
 public class TestListener implements ITestListener {
 
@@ -39,15 +39,36 @@ public class TestListener implements ITestListener {
         try {
             WebDriver driver = BaseUI.driver;
 
-            if (driver == null) return;
+            if (driver == null) {
+                System.out.println("❌ DRIVER IS NULL");
+                return;
+            }
 
-            String base64 = ((TakesScreenshot) driver)
-                    .getScreenshotAs(OutputType.BASE64);
+            // 📸 Take screenshot
+            File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-            test.fail(result.getThrowable(),
-                    MediaEntityBuilder
-                            .createScreenCaptureFromBase64String(base64)
-                            .build());
+            // 📁 Create folder
+            String folderPath = System.getProperty("user.dir") + "/screenshots/";
+            File folder = new File(folderPath);
+
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+
+            // 🖼️ File name
+            String fileName = result.getMethod().getMethodName()
+                    + "_" + System.currentTimeMillis() + ".png";
+
+            File dest = new File(folderPath + fileName);
+
+            // 💾 Save screenshot
+            FileUtils.copyFile(src, dest);
+
+            System.out.println("🔥 SCREENSHOT SAVED AT: " + dest.getAbsolutePath());
+
+            // 📊 Attach to Extent Report
+            test.fail(result.getThrowable());
+            test.addScreenCaptureFromPath("screenshots/" + fileName);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,5 +78,6 @@ public class TestListener implements ITestListener {
     @Override
     public void onFinish(ITestContext context) {
         extent.flush();
+        System.out.println("🔥 EXTENT REPORT GENERATED");
     }
 }
