@@ -33,6 +33,8 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
+    	
+    	System.out.println("🔥 LISTENER HIT - FAILURE TRIGGERED");
 
         test.get().fail(result.getThrowable());
 
