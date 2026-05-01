@@ -3,22 +3,27 @@ package utils;
 import base.BaseUI;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.*;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-import java.io.File;
-
 public class TestListener implements ITestListener {
 
-	ExtentReports extent;
+    ExtentReports extent;
     ThreadLocal<ExtentTest> test = new ThreadLocal<>();
 
     @Override
     public void onStart(ITestContext context) {
         extent = ExtentReportManager.getReportObject();
+    }
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        ExtentTest extentTest = extent.createTest(result.getMethod().getMethodName());
+        test.set(extentTest);
     }
 
     @Override
@@ -28,6 +33,7 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestFailure(ITestResult result) {
+
         test.get().fail(result.getThrowable());
 
         try {
@@ -35,22 +41,11 @@ public class TestListener implements ITestListener {
 
             if (driver == null) return;
 
-            File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            // ✅ CI SAFE: Base64 screenshot (BEST PRACTICE)
+            String base64 = ((TakesScreenshot) driver)
+                    .getScreenshotAs(OutputType.BASE64);
 
-            String folderPath = System.getProperty("user.dir") + "/screenshots/";
-            File folder = new File(folderPath);
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
-
-            String fileName = result.getMethod().getMethodName()
-                    + "_" + System.currentTimeMillis() + ".png";
-
-            File dest = new File(folderPath + fileName);
-            FileUtils.copyFile(src, dest);
-
-            String fullPath = System.getProperty("user.dir") + "/screenshots/" + fileName;
-            test.get().addScreenCaptureFromPath(fullPath);
+            test.get().addScreenCaptureFromBase64String(base64);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,9 +54,6 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext context) {
-    	String path = "reports/index.html";
-        System.out.println("🔥 EXTENT REPORT GENERATED AT: " + path);
-
         extent.flush();
     }
 }
