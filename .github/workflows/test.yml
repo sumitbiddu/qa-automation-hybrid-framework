@@ -37,7 +37,7 @@ jobs:
 
       # Run tests
       - name: Run Tests
-        run: mvn clean test -Dmaven.test.failure.ignore=false
+        run: mvn clean test -DsuiteXmlFile=testng.xml -Dmaven.test.failure.ignore=false
 
       # Debug workspace (VERY IMPORTANT for CI issues)
       - name: Debug workspace
