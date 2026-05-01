@@ -49,7 +49,8 @@ public class TestListener implements ITestListener {
             File dest = new File(folderPath + fileName);
             FileUtils.copyFile(src, dest);
 
-            test.get().addScreenCaptureFromPath("screenshots/" + fileName);
+            String relativePath = "../screenshots/" + fileName;
+            test.get().addScreenCaptureFromPath(relativePath);
 
         } catch (Exception e) {
             e.printStackTrace();
