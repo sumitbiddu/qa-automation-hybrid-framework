@@ -14,6 +14,8 @@ public class E2ETest extends BaseUI {
 
     @Test
     public void completeEndToEndFlow() {
+    	
+    	Assert.assertTrue(false);
 
         // LOGIN
         LoginPage login = new LoginPage(driver);

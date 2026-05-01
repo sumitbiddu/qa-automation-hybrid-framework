@@ -39,9 +39,9 @@ public class TestListener implements ITestListener {
 
             File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-            File folder = new File("screenshots");
+            File folder = new File(System.getProperty("user.dir") + "/screenshots");
             if (!folder.exists()) {
-                folder.mkdir();
+                folder.mkdirs();
             }
 
             String fileName = result.getName() + "_" + System.currentTimeMillis() + ".png";
@@ -50,7 +50,7 @@ public class TestListener implements ITestListener {
 
             FileUtils.copyFile(src, dest);
 
-            System.out.println("Screenshot saved: " + dest.getAbsolutePath());
+            System.out.println("Screenshot saved at: " + dest.getAbsolutePath());
 
         } catch (Exception e) {
             e.printStackTrace();
