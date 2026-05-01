@@ -10,25 +10,33 @@ import java.time.Duration;
 
 public class BaseUI {
 
-    public static WebDriver driver;
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+
+    public static WebDriver getDriver() {
+        return driver.get();
+    }
 
     @BeforeMethod
     public void setup() {
-    	ChromeOptions options = new ChromeOptions();
-    	options.addArguments("--headless=new");
-    	options.addArguments("--no-sandbox");
-    	options.addArguments("--disable-dev-shm-usage");
 
-    	driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.get("https://www.saucedemo.com/");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+
+        WebDriver localDriver = new ChromeDriver(options);
+        driver.set(localDriver);
+
+        getDriver().manage().window().maximize();
+        getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        getDriver().get("https://www.saucedemo.com/");
     }
 
     @AfterMethod
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
+        if (getDriver() != null) {
+            getDriver().quit();
+            driver.remove();
         }
     }
 }

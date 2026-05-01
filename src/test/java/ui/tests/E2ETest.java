@@ -15,17 +15,17 @@ public class E2ETest extends BaseUI {
     @Test
     public void completeEndToEndFlow() {
     	
-    	Assert.assertEquals(driver.getCurrentUrl(), "https://www.saucedemo.com/");
+    	Assert.assertEquals(BaseUI.getDriver().getCurrentUrl(), "https://www.saucedemo.com/");
 
         // LOGIN
-        LoginPage login = new LoginPage(driver);
+    	LoginPage login = new LoginPage(BaseUI.getDriver());
 
         login.enterUsername("standard_user");
         login.enterPassword("secret_sauce");
         login.clickLogin();
 
         // PRODUCT
-        ProductsPage product = new ProductsPage(driver);
+        ProductsPage product = new ProductsPage(BaseUI.getDriver());
 
         product.addFirstProductToCart();
         product.openCart();

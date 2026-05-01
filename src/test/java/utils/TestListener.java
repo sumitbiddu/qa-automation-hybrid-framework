@@ -45,7 +45,7 @@ public class TestListener implements ITestListener {
         getTest().fail(result.getThrowable());
 
         try {
-            WebDriver driver = BaseUI.driver;
+        	WebDriver driver = BaseUI.getDriver();
 
             if (driver == null) {
                 System.out.println("❌ DRIVER IS NULL");

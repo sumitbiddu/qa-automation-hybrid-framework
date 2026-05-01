@@ -15,13 +15,13 @@ public class CartTests extends BaseUI {
     @Test
     public void addToCartTest() {
 
-        LoginPage login = new LoginPage(driver);
+    	LoginPage login = new LoginPage(BaseUI.getDriver());
 
         login.enterUsername("standard_user");
         login.enterPassword("secret_sauce");
         login.clickLogin();
 
-        ProductsPage product = new ProductsPage(driver);
+        ProductsPage product = new ProductsPage(BaseUI.getDriver());
 
         product.addFirstProductToCart();
 
@@ -31,18 +31,18 @@ public class CartTests extends BaseUI {
     @Test
     public void cartEmptyTest() {
 
-        LoginPage login = new LoginPage(driver);
+    	LoginPage login = new LoginPage(BaseUI.getDriver());
 
         login.enterUsername("standard_user");
         login.enterPassword("secret_sauce");
         login.clickLogin();
 
-        ProductsPage product = new ProductsPage(driver);
+        ProductsPage product = new ProductsPage(BaseUI.getDriver());
 
         product.openCart();
 
         Assert.assertTrue(
-            driver.findElements(By.className("shopping_cart_badge")).size() == 0
+        		BaseUI.getDriver().findElements(By.className("shopping_cart_badge")).size() == 0
         );
     }
 }
