@@ -16,13 +16,14 @@ Designed to simulate real-world automation workflows used in enterprise QA envir
 
 ##  Key Highlights
 
-✔ End-to-end UI automation (Login, Cart, Checkout flow)  
-✔ API testing using Rest Assured  
-✔ Page Object Model (POM) architecture  
-✔ TestNG framework for execution & assertions  
-✔ CI/CD pipeline using GitHub Actions  
-✔ Headless browser execution for CI  
-✔ Failure screenshots + Extent reporting  
+End-to-end UI automation (Login, Cart, Checkout flow)  
+API testing using Rest Assured  
+Page Object Model (POM) architecture  
+TestNG framework for execution & assertions  
+CI/CD pipeline using GitHub Actions  
+Headless browser execution for CI  
+Failure screenshots + Extent reporting  
+Parallel execution enabled for faster runs
 
 ---
 
@@ -58,6 +59,7 @@ mvn clean test
 Runs automatically on every push to main
 Executes UI + API tests in headless mode
 Generates test reports and logs in GitHub Actions
+Supports parallel test execution in GitHub Actions
 
  View pipeline:
 https://github.com/sumitbiddu/qa-automation-hybrid-framework/actions
@@ -70,6 +72,22 @@ TestNG-based execution flow
 GitHub Actions CI/CD integration
 Screenshot capture on failure
 Reporting support (Extent Reports)
+
+##  Parallel Execution Support
+
+This framework supports parallel execution using TestNG.
+
+- Runs UI and API tests in parallel
+- Uses ThreadLocal WebDriver for thread-safe execution
+- Ensures no test data collision in concurrent runs
+- Improves execution speed in CI/CD pipelines
+
+  ##  Framework Enhancements
+
+- Migrated WebDriver to ThreadLocal for parallel safety
+- Improved TestNG Listener for thread-safe reporting
+- Updated CI pipeline to support parallel execution
+- Ensured stable execution in GitHub Actions environment
 
 ## Author
 
