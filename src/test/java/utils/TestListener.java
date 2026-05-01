@@ -14,7 +14,11 @@ import java.io.File;
 public class TestListener implements ITestListener {
 
     ExtentReports extent;
-    ExtentTest test;
+    public static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
+
+    public static ExtentTest getTest() {
+        return extentTest.get();
+    }
 
     @Override
     public void onStart(ITestContext context) {
@@ -23,18 +27,22 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult result) {
-        test = extent.createTest(result.getMethod().getMethodName());
+        ExtentTest test = extent.createTest(result.getMethod().getMethodName());
+        extentTest.set(test);
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        test.pass("Test Passed");
+        getTest().pass("Test Passed: " + result.getMethod().getMethodName());
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
 
         System.out.println("🔥 LISTENER HIT - FAILURE TRIGGERED");
+
+        getTest().fail("Test Failed: " + result.getMethod().getMethodName());
+        getTest().fail(result.getThrowable());
 
         try {
             WebDriver driver = BaseUI.driver;
@@ -44,10 +52,9 @@ public class TestListener implements ITestListener {
                 return;
             }
 
-            // 📸 Take screenshot
+            // 📸 Screenshot
             File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-            // 📁 Create folder
             String folderPath = System.getProperty("user.dir") + "/screenshots/";
             File folder = new File(folderPath);
 
@@ -55,20 +62,16 @@ public class TestListener implements ITestListener {
                 folder.mkdirs();
             }
 
-            // 🖼️ File name
             String fileName = result.getMethod().getMethodName()
                     + "_" + System.currentTimeMillis() + ".png";
 
             File dest = new File(folderPath + fileName);
 
-            // 💾 Save screenshot
             FileUtils.copyFile(src, dest);
 
             System.out.println("🔥 SCREENSHOT SAVED AT: " + dest.getAbsolutePath());
 
-            // 📊 Attach to Extent Report
-            test.fail(result.getThrowable());
-            test.addScreenCaptureFromPath("screenshots/" + fileName);
+            getTest().addScreenCaptureFromPath("screenshots/" + fileName);
 
         } catch (Exception e) {
             e.printStackTrace();
