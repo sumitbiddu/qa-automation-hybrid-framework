@@ -47,7 +47,10 @@ public class TestListener implements ITestListener {
             String base64 = ((TakesScreenshot) driver)
                     .getScreenshotAs(OutputType.BASE64);
 
-            test.get().addScreenCaptureFromBase64String(base64);
+            test.get().fail("Test Failed",
+                    com.aventstack.extentreports.MediaEntityBuilder
+                            .createScreenCaptureFromBase64String(base64)
+                            .build());
 
         } catch (Exception e) {
             e.printStackTrace();
